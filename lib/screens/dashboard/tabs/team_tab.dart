@@ -931,8 +931,10 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
                   const SizedBox(height: AppConstants.paddingXS),
                   TextFormField(
                     controller: _titleController,
+                    style: const TextStyle(color: Colors.black),
                     decoration: InputDecoration(
                       hintText: 'Enter task title',
+                      hintStyle: const TextStyle(color: Colors.black54),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(
                           AppConstants.radiusM,
@@ -957,8 +959,10 @@ class _AssignTaskDialogState extends State<AssignTaskDialog> {
                   const SizedBox(height: AppConstants.paddingXS),
                   TextFormField(
                     controller: _descriptionController,
+                    style: const TextStyle(color: Colors.black),
                     decoration: InputDecoration(
                       hintText: 'Enter task description',
+                      hintStyle: const TextStyle(color: Colors.black54),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(
                           AppConstants.radiusM,

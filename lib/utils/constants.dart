@@ -189,6 +189,10 @@ class AppTheme {
           horizontal: AppConstants.paddingM,
           vertical: AppConstants.paddingM,
         ),
+        labelStyle: const TextStyle(color: Colors.black87),
+        hintStyle: const TextStyle(color: Colors.black54),
+        prefixIconColor: Colors.black54,
+        suffixIconColor: Colors.black54,
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppConstants.primaryColor,

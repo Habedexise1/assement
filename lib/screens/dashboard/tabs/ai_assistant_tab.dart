@@ -258,10 +258,12 @@ class _AIAssistantTabState extends State<AIAssistantTab> {
                       const SizedBox(height: AppConstants.paddingM),
                       TextFormField(
                         controller: _promptController,
+                        style: const TextStyle(color: Colors.black),
                         maxLines: 4,
                         decoration: const InputDecoration(
                           hintText:
                               'e.g., Plan my week with 3 work tasks and 2 wellness tasks',
+                          hintStyle: TextStyle(color: Colors.black54),
                           border: OutlineInputBorder(),
                         ),
                         validator: (value) {

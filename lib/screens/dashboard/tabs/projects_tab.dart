@@ -79,9 +79,12 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             // Project Name Field
             TextField(
               controller: nameController,
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Project Name',
                 hintText: 'Enter project name',
+                labelStyle: const TextStyle(color: Colors.black87),
+                hintStyle: const TextStyle(color: Colors.black54),
                 prefixIcon: const Icon(Icons.folder, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppConstants.radiusM),
@@ -104,9 +107,12 @@ class _CreateProjectDialogState extends State<CreateProjectDialog> {
             // Description Field
             TextField(
               controller: descriptionController,
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Description',
                 hintText: 'Enter project description',
+                labelStyle: const TextStyle(color: Colors.black87),
+                hintStyle: const TextStyle(color: Colors.black54),
                 prefixIcon: const Icon(Icons.description, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppConstants.radiusM),
@@ -365,9 +371,12 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
             // Project Name Field
             TextField(
               controller: nameController,
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Project Name',
                 hintText: 'Enter project name',
+                labelStyle: const TextStyle(color: Colors.black87),
+                hintStyle: const TextStyle(color: Colors.black54),
                 prefixIcon: const Icon(Icons.folder, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppConstants.radiusM),
@@ -390,9 +399,12 @@ class _EditProjectDialogState extends State<EditProjectDialog> {
             // Description Field
             TextField(
               controller: descriptionController,
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Description',
                 hintText: 'Enter project description',
+                labelStyle: const TextStyle(color: Colors.black87),
+                hintStyle: const TextStyle(color: Colors.black54),
                 prefixIcon: const Icon(Icons.description, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppConstants.radiusM),

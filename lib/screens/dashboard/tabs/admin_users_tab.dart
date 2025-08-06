@@ -433,8 +433,10 @@ class _AddUserDialogState extends State<AddUserDialog> {
           children: [
             TextFormField(
               controller: _nameController,
+              style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
                 labelText: 'Full Name',
+                labelStyle: TextStyle(color: Colors.black87),
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -447,8 +449,10 @@ class _AddUserDialogState extends State<AddUserDialog> {
             const SizedBox(height: AppConstants.paddingM),
             TextFormField(
               controller: _emailController,
+              style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
                 labelText: 'Email',
+                labelStyle: TextStyle(color: Colors.black87),
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -586,8 +590,10 @@ class _EditUserDialogState extends State<EditUserDialog> {
           children: [
             TextFormField(
               controller: _nameController,
+              style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
                 labelText: 'Full Name',
+                labelStyle: TextStyle(color: Colors.black87),
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
@@ -600,8 +606,10 @@ class _EditUserDialogState extends State<EditUserDialog> {
             const SizedBox(height: AppConstants.paddingM),
             TextFormField(
               controller: _emailController,
+              style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
                 labelText: 'Email',
+                labelStyle: TextStyle(color: Colors.black87),
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
