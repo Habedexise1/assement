@@ -87,4 +87,4 @@ MIT License - feel free to use this project however you want!
 
 ---
 
-**Built with ❤️ using Flutter**
+**Built with using Flutter**
