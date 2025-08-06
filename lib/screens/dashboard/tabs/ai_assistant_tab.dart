@@ -33,7 +33,7 @@ class _AIAssistantTabState extends State<AIAssistantTab>
 
   @override
   void initState() {
-    super.initState();up
+    super.initState();
     _thinkingAnimationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
