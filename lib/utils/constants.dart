@@ -66,10 +66,13 @@ class AppConstants {
   // Sample AI Prompts
   static const List<String> samplePrompts = [
     'Plan my week with 3 work tasks and 2 wellness tasks',
-    'Create a study schedule for my Flutter course',
-    'Generate tasks for my home renovation project',
-    'Plan my daily routine with productivity tasks',
-    'Create tasks for my fitness goals this month',
+    'Create a study schedule for my Flutter development course',
+    'Generate tasks for my mobile app development project',
+    'Plan my daily routine with productivity and learning tasks',
+    'Create tasks for my fitness and wellness goals this month',
+    'Help me organize my home renovation project tasks',
+    'Generate tasks for my business startup planning',
+    'Create a balanced schedule for work, study, and personal time',
   ];
 
   // Color parsing utility
@@ -193,6 +196,11 @@ class AppTheme {
         hintStyle: const TextStyle(color: Colors.black54),
         prefixIconColor: Colors.black54,
         suffixIconColor: Colors.black54,
+      ),
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: AppConstants.primaryColor,
+        selectionColor: AppConstants.primaryColor,
+        selectionHandleColor: AppConstants.primaryColor,
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppConstants.primaryColor,

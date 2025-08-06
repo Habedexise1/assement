@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/task_provider.dart';
 import '../../../utils/constants.dart';
+import 'dart:async'; // Added for Timer
 
 class AIAssistantTab extends StatefulWidget {
   const AIAssistantTab({super.key});
@@ -10,15 +11,71 @@ class AIAssistantTab extends StatefulWidget {
   State<AIAssistantTab> createState() => _AIAssistantTabState();
 }
 
-class _AIAssistantTabState extends State<AIAssistantTab> {
+class _AIAssistantTabState extends State<AIAssistantTab>
+    with TickerProviderStateMixin {
   final _promptController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isGenerating = false;
+  late AnimationController _thinkingAnimationController;
+  late AnimationController _pulseAnimationController;
+  String _currentThinkingMessage = '';
+  int _thinkingMessageIndex = 0;
+
+  final List<String> _thinkingMessages = [
+    "🤖 Analyzing your request...",
+    "🧠 Processing task requirements...",
+    "⚡ Generating optimal task structure...",
+    "📊 Considering priorities and deadlines...",
+    "🎯 Creating actionable items...",
+    "🚀 Optimizing for productivity...",
+    "✨ Finalizing your task plan...",
+  ];
+
+  @override
+  void initState() {
+    super.initState();up
+    _thinkingAnimationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+    _pulseAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+  }
 
   @override
   void dispose() {
     _promptController.dispose();
+    _thinkingAnimationController.dispose();
+    _pulseAnimationController.dispose();
     super.dispose();
+  }
+
+  void _startThinkingAnimation() {
+    _thinkingMessageIndex = 0;
+    _currentThinkingMessage = _thinkingMessages[0];
+    _thinkingAnimationController.repeat();
+    _pulseAnimationController.repeat();
+
+    // Cycle through thinking messages
+    Timer.periodic(const Duration(milliseconds: 800), (timer) {
+      if (!_isGenerating) {
+        timer.cancel();
+        return;
+      }
+
+      setState(() {
+        _thinkingMessageIndex =
+            (_thinkingMessageIndex + 1) % _thinkingMessages.length;
+        _currentThinkingMessage = _thinkingMessages[_thinkingMessageIndex];
+      });
+    });
+  }
+
+  void _stopThinkingAnimation() {
+    _thinkingAnimationController.stop();
+    _pulseAnimationController.stop();
   }
 
   Future<void> _generateTasks() async {
@@ -40,25 +97,46 @@ class _AIAssistantTabState extends State<AIAssistantTab> {
       _isGenerating = true;
     });
 
+    _startThinkingAnimation();
+
     try {
       final tasks = await taskProvider.generateTasksWithAI(
         _promptController.text,
       );
 
       if (mounted) {
+        _stopThinkingAnimation();
+
+        // Show success animation
+        _pulseAnimationController.forward();
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Generated ${tasks.length} tasks successfully!'),
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 8),
+                Text('Generated ${tasks.length} tasks successfully!'),
+              ],
+            ),
             backgroundColor: AppConstants.successColor,
+            duration: const Duration(seconds: 3),
           ),
         );
         _promptController.clear();
       }
     } catch (e) {
       if (mounted) {
+        _stopThinkingAnimation();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to generate tasks: ${e.toString()}'),
+            content: Row(
+              children: [
+                const Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 8),
+                Text('Failed to generate tasks: ${e.toString()}'),
+              ],
+            ),
             backgroundColor: AppConstants.errorColor,
           ),
         );
@@ -70,6 +148,54 @@ class _AIAssistantTabState extends State<AIAssistantTab> {
         });
       }
     }
+  }
+
+  void _showPersonalizedRecommendations(
+    BuildContext context,
+    TaskProvider taskProvider,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.psychology, color: AppConstants.secondaryColor),
+            SizedBox(width: AppConstants.paddingS),
+            Text('AI Learning Report'),
+          ],
+        ),
+        content: FutureBuilder<String>(
+          future: taskProvider.getPersonalizedRecommendations(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Text(
+                'Failed to load recommendations: ${snapshot.error}',
+                style: const TextStyle(color: AppConstants.errorColor),
+              );
+            }
+            return SingleChildScrollView(
+              child: Text(
+                snapshot.data ?? 'No personalized recommendations available',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                  height: 1.5,
+                ),
+              ),
+            );
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -104,19 +230,31 @@ class _AIAssistantTabState extends State<AIAssistantTab> {
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(AppConstants.paddingM),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(
-                            AppConstants.radiusM,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.psychology,
-                          color: Colors.white,
-                          size: 32,
-                        ),
+                      AnimatedBuilder(
+                        animation: _pulseAnimationController,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: _isGenerating
+                                ? 1.0 + (_pulseAnimationController.value * 0.1)
+                                : 1.0,
+                            child: Container(
+                              padding: const EdgeInsets.all(
+                                AppConstants.paddingM,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(
+                                  AppConstants.radiusM,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.psychology,
+                                color: Colors.white,
+                                size: 32,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(width: AppConstants.paddingM),
                       const Expanded(
@@ -147,6 +285,56 @@ class _AIAssistantTabState extends State<AIAssistantTab> {
                 ),
 
                 const SizedBox(height: AppConstants.paddingXL),
+
+                // AI Thinking Animation
+                if (_isGenerating) ...[
+                  Container(
+                    padding: const EdgeInsets.all(AppConstants.paddingL),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(AppConstants.radiusL),
+                      boxShadow: AppConstants.cardShadow,
+                    ),
+                    child: Column(
+                      children: [
+                        AnimatedBuilder(
+                          animation: _thinkingAnimationController,
+                          builder: (context, child) {
+                            return Transform.rotate(
+                              angle:
+                                  _thinkingAnimationController.value *
+                                  2 *
+                                  3.14159,
+                              child: const Icon(
+                                Icons.sync,
+                                size: 32,
+                                color: AppConstants.primaryColor,
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: AppConstants.paddingM),
+                        Text(
+                          _currentThinkingMessage,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppConstants.paddingM),
+                        const LinearProgressIndicator(
+                          backgroundColor: Colors.grey,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppConstants.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppConstants.paddingL),
+                ],
 
                 // Selected Project
                 if (taskProvider.selectedProject != null) ...[
@@ -298,10 +486,10 @@ class _AIAssistantTabState extends State<AIAssistantTab> {
                                       ),
                                     ),
                                     SizedBox(width: AppConstants.paddingS),
-                                    Text('Generating Tasks...'),
+                                    Text('AI is Thinking...'),
                                   ],
                                 )
-                              : const Text('Generate Tasks'),
+                              : const Text('Generate Tasks with AI'),
                         ),
                       ),
                     ],
@@ -397,7 +585,7 @@ class _AIAssistantTabState extends State<AIAssistantTab> {
                             ),
                             SizedBox(width: AppConstants.paddingS),
                             Text(
-                              'Task Insights',
+                              'AI Task Insights',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -433,6 +621,24 @@ class _AIAssistantTabState extends State<AIAssistantTab> {
                               ),
                             );
                           },
+                        ),
+                        const SizedBox(height: AppConstants.paddingL),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () => _showPersonalizedRecommendations(
+                              context,
+                              taskProvider,
+                            ),
+                            icon: const Icon(Icons.psychology),
+                            label: const Text(
+                              'Get Personalized AI Recommendations',
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppConstants.secondaryColor,
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
                         ),
                       ],
                     ),

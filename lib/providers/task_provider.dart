@@ -392,6 +392,19 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
+  Future<String> getPersonalizedRecommendations() async {
+    try {
+      return await _aiService.getPersonalizedRecommendations(
+        _tasks,
+        'current_user_id',
+      );
+    } catch (e) {
+      _error = 'Failed to get personalized recommendations: ${e.toString()}';
+      notifyListeners();
+      return 'Failed to load personalized recommendations';
+    }
+  }
+
   void clearError() {
     _error = null;
     notifyListeners();
